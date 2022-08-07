@@ -106,7 +106,7 @@ public abstract class Solver<ActionType, NodeType extends Node<ActionType, NodeT
    */
   protected final double calculateUCT(NodeType node) {
     Objects.requireNonNull(node, "node");
-    var parent = node.getParent();
+    var parent = node.parent();
     var parentN = parent != null ? parent.n() : node.n();
     return calculateUCT(parentN, node.n(), node.reward(), explorationConstant);
   }
@@ -126,7 +126,7 @@ public abstract class Solver<ActionType, NodeType extends Node<ActionType, NodeT
   public ActionType extractOptimalAction() {
     var list = this.root().children();
     return list.isEmpty() ? null
-      : list.stream().max((x,y) -> x.n() - x.n()).get().getInducingAction();
+      : list.stream().max((x,y) -> x.n() - x.n()).get().inducingAction();
   }
 
   // Debug and Diagnostics
@@ -162,13 +162,13 @@ public abstract class Solver<ActionType, NodeType extends Node<ActionType, NodeT
    */
   public void displayNode(NodeType node) {
     Objects.requireNonNull(node, "node");
-    var parent = node.getParent();
+    var parent = node.parent();
     if (parent!= null) {
       displayNode(parent);
     }
-    var depth = node.getDepth();
+    var depth = node.depth();
     if (depth > 0) {
-      System.out.print(" ".repeat((node.getDepth() - 1)*2) + " \u2514");
+      System.out.print(" ".repeat((node.depth() - 1)*2) + " \u2514");
     }
     System.out.println(formatNode(node));
   }
@@ -181,7 +181,7 @@ public abstract class Solver<ActionType, NodeType extends Node<ActionType, NodeT
   }
 
   private final void displayTree(int depthLimit, NodeType node, String indent) {
-    if (node == null || node.getDepth() > depthLimit) {
+    if (node == null || node.depth() > depthLimit) {
       return;
     }
     System.out.format("%s %s (n: %d, reward: %.5f, UCT: %.5f)",

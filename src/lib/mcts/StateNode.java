@@ -47,7 +47,7 @@ public final class StateNode<StateType, ActionType> extends Node<ActionType, Sta
 
   @Override
   public void addChild(StateNode<StateType, ActionType> child) {
-    var action = child.getInducingAction();
+    var action = child.inducingAction();
     if (action == null) {
       throw new IllegalArgumentException("Inducing action must be set on child");
     }

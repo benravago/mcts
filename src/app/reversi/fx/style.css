@@ -1,0 +1,43 @@
+/* buttons in menu */
+.button {
+  -fx-background-color: transparent;
+  -fx-text-fill: #336459;
+}
+
+/* highlight on hover */
+.button:hover {
+  -fx-background-color: transparent;
+  -fx-text-fill: #9DC8E4;
+}
+
+/* main window background */
+.root {
+  -fx-background-color: #2A363B;
+  -fx-border-width: 1;
+  -fx-border-color: #000000;
+}
+
+/* score panel, bottom panel */
+.hbox {
+  -fx-background-color: #336459;
+  -fx-border-width: 1;
+  -fx-border-color: #000000;
+}
+
+/* menu */
+.hbox2 {
+  -fx-background-color: #332211;
+}
+
+/* board square */
+.pane {
+  -fx-border-width: 0.25;
+  -fx-border-color: #000000;
+}
+
+/* summary */
+.pane2 {
+  -fx-background-color: #2A363B;
+  -fx-border-width: 10;
+  -fx-border-color: #336459;
+}

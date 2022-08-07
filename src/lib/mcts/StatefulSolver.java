@@ -105,8 +105,8 @@ public class StatefulSolver<StateType, ActionType> extends Solver<ActionType, St
     // If state is terminal, the reward is defined by MDP
     if (node.isTerminal()) {
       traceln("Terminal state reached");
-      var parent = node.getParent();
-      return mdp.reward(parent != null ? parent.state() : null, node.getInducingAction(), node.state());
+      var parent = node.parent();
+      return mdp.reward(parent != null ? parent.state() : null, node.inducingAction(), node.state());
     }
 
     var depth = 0;
@@ -157,7 +157,7 @@ public class StatefulSolver<StateType, ActionType> extends Solver<ActionType, St
       currentStateNode.maxReward(max(currentStateNode.maxReward(), currentReward));
       currentStateNode.reward(currentStateNode.reward() + currentReward);
       currentStateNode.n(currentStateNode.n() + 1);
-      var parent = currentStateNode.getParent();
+      var parent = currentStateNode.parent();
       if (parent == null) break;
       currentStateNode = parent;
       currentReward *= rewardDiscountFactor;

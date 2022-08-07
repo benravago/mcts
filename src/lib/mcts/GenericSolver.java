@@ -115,8 +115,8 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
     // If state is terminal, the reward is defined by MDP
     if (mdp.isTerminal(node.state())) {
       traceln("Terminal state reached");
-      var parent = node.getParent();
-      return mdp.reward((parent != null ? parent.state() : null), node.getInducingAction(), node.state());
+      var parent = node.parent();
+      return mdp.reward((parent != null ? parent.state() : null), node.inducingAction(), node.state());
     }
 
     var depth = 0;
@@ -166,7 +166,7 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
       currentStateNode.maxReward(max(currentStateNode.maxReward(), currentReward));
       currentStateNode.reward(currentStateNode.reward() + currentReward);
       currentStateNode.n(currentStateNode.n() + 1);
-      var parent = currentStateNode.getParent();
+      var parent = currentStateNode.parent();
       if (parent == null) break;
       currentStateNode = parent;
       currentReward *= rewardDiscountFactor;
@@ -177,7 +177,7 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
 
   private final void simulateActions(ActionNode<StateType, ActionType> node) {
     // private fun simulateActions(node: ActionNode<StateType, ActionType>) {
-    var parent = node.getParent();
+    var parent = node.parent();
 
     if (parent == null) {
       var parentState = mdp.initialState();
@@ -189,7 +189,7 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
     // Parent simulation must be run before current simulation can proceed
     var parentState = parent.state();
     // If the parent node is not null, a parent action must have been specified, otherwise it's an error
-    var parentAction = node.getInducingAction();
+    var parentAction = node.inducingAction();
     if (parentAction == null) {
       throw new IllegalStateException("Action was null for non-null parent");
     }

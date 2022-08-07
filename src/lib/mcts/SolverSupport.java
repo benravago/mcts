@@ -12,7 +12,7 @@ public interface SolverSupport {
   static int cmp(double a, double b) { return a < b ? -1 : a > b ? 1 : 0; }
 
   static <A,S> Set<A> exploredActions(Node<A,? super S> node) {
-    return node.children().stream().map(c -> c.getInducingAction()).collect(toSet()); // .distinct()
+    return node.children().stream().map(c -> c.inducingAction()).collect(toSet()); // .distinct()
   }
 
   static <A,S> List<A> unexploredActions(Node<A,? super S> node, Set<A> exploredActions) {

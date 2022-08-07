@@ -35,7 +35,7 @@ public final class ActionNode<StateType, ActionType> extends Node<ActionType, Ac
     if (s != null) {
        return s;
     } else {
-       throw new IllegalStateException("Simulation not run at depth: " + this.getDepth());
+       throw new IllegalStateException("Simulation not run at depth: " + this.depth());
     }
   }
   public final void state(StateType state) {
@@ -78,12 +78,12 @@ public final class ActionNode<StateType, ActionType> extends Node<ActionType, Ac
   @Override
   public Collection<ActionNode<StateType, ActionType>> children(ActionType action) {
     assert action != null;
-    return children.stream().filter( c -> c.getInducingAction() == action ).collect(toList());
+    return children.stream().filter(c -> action.equals(c.inducingAction())).collect(toList());
   }
 
   @Override
   public String toString() {
-    return "Action: %s, Max Reward: %.5f".formatted(getInducingAction(),maxReward());
+    return "Action: %s, Max Reward: %.5f".formatted(inducingAction(),maxReward());
   }
 
 }

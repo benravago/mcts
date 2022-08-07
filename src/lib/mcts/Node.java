@@ -18,20 +18,22 @@ public abstract class Node<ActionType, SelfType extends Node<ActionType, SelfTyp
   public Node(SelfType parent, ActionType inducingAction) {
     this.parent = parent;
     this.inducingAction = inducingAction;
-    this.depth = this.parent == null ? 0 : this.parent.getDepth() + 1;
+    this.depth = this.parent == null ? 0 : this.parent.depth() + 1;
   }
 
   private final SelfType parent;
   private final ActionType inducingAction;
 
-  public final SelfType getParent() { return this.parent; }
-  public final ActionType getInducingAction() { return this.inducingAction; }
+  public final SelfType parent() { return this.parent; }
+  public final ActionType inducingAction() { return this.inducingAction; }
+
+  public Iterable<? extends ActionType> validActions() { return Collections.emptyList(); }
 
   /**
    * The depth of the node.
    */
   private final int depth;
-  public final int getDepth() { return this.depth; }
+  public final int depth() { return this.depth; }
 
   /**
    * The number of visits to the node.
@@ -46,7 +48,7 @@ public abstract class Node<ActionType, SelfType extends Node<ActionType, SelfTyp
   private double reward;
   public final double reward() { return this.reward; }
   public final void reward(double reward) { this.reward = reward; }
-
+ 
   /**
    * The max reward value among the children of this node.
    */
@@ -64,7 +66,5 @@ public abstract class Node<ActionType, SelfType extends Node<ActionType, SelfTyp
    */
   public abstract Collection<SelfType> children(ActionType action);
   public abstract Collection<SelfType> children();
-
-  public Iterable<? extends ActionType> validActions() { return Collections.emptyList(); }
 
 }
