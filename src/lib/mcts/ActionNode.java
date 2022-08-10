@@ -1,11 +1,11 @@
 package lib.mcts;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Set;
 import java.util.Collection;
-import static java.util.stream.Collectors.toList;
-
+import static java.util.stream.Collectors.*;
 
 /**
  * A representation of nodes used by the stateless [GenericSolver] to solve a Markov Decision Process (MDP).
@@ -18,24 +18,24 @@ import static java.util.stream.Collectors.toList;
  * The constructor takes in a [ActionNode] that represents the parent node and an [ActionType] that represents the
  * action taken to transition to the current node.
  */
-public final class ActionNode<StateType, ActionType> extends Node<ActionType, ActionNode<StateType, ActionType>> {
+public final class ActionNode<StateType, ActionType> extends AbstractNode<ActionType, ActionNode<StateType, ActionType>> {
 
   public ActionNode(ActionNode<StateType, ActionType> parent, ActionType inducingAction) {
     super(parent, inducingAction);
     this.children = new ArrayList<>();
   }
 
+  private StateType state;
+  private Set<ActionType> validActions;
+
   /**
    * The state at this node. This is only available if a simulation has run.
    */
-  private StateType state;
-
   public final StateType state() {
-    var s = this.state;
-    if (s != null) {
-       return s;
+    if (state != null) {
+      return state;
     } else {
-       throw new IllegalStateException("Simulation not run at depth: " + this.depth());
+      throw new IllegalStateException("Simulation not run at depth: " + depth());
     }
   }
   public final void state(StateType state) {
@@ -45,19 +45,16 @@ public final class ActionNode<StateType, ActionType> extends Node<ActionType, Ac
   /**
    * A list of actions that can be taken from this node. This is only available if a simulation has run.
    */
-  private Iterable<? extends ActionType> validActions;
-
   @Override
-  public final Iterable<? extends ActionType> validActions() {
-    var v = validActions;
-    if (v != null) {
-       return v;
+  public final Set<ActionType> validActions() {
+    if (validActions != null) {
+      return validActions;
     } else {
-       throw new IllegalStateException("Simulation not run");
+      throw new IllegalStateException("Simulation not run");
     }
   }
 
-  public final void validActions(Iterable<? extends ActionType> validActions) {
+  public final void validActions(Set<ActionType> validActions) {
     Objects.requireNonNull(validActions, "validActions");
     this.validActions = validActions;
   }
@@ -66,7 +63,6 @@ public final class ActionNode<StateType, ActionType> extends Node<ActionType, Ac
 
   @Override
   public void addChild(ActionNode<StateType, ActionType> child) {
-    Objects.requireNonNull(child, "child");
     children.add(child);
   }
 
@@ -78,7 +74,7 @@ public final class ActionNode<StateType, ActionType> extends Node<ActionType, Ac
   @Override
   public Collection<ActionNode<StateType, ActionType>> children(ActionType action) {
     assert action != null;
-    return children.stream().filter(c -> action.equals(c.inducingAction())).collect(toList());
+    return children.stream().filter(c -> c.inducingAction().equals(action)).collect(toList());
   }
 
   @Override

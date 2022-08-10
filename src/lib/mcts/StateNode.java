@@ -1,10 +1,11 @@
 package lib.mcts;
 
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.Set;
+import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -19,9 +20,9 @@ import java.util.Objects;
  * action taken to transition to the current node, a [StateType] that represents the state at this node, a set of valid
  * actions that can be taken from this node and whether this node represents a terminal state
  */
-public final class StateNode<StateType, ActionType> extends Node<ActionType, StateNode<StateType, ActionType>> {
+public final class StateNode<StateType, ActionType> extends AbstractNode<ActionType, StateNode<StateType, ActionType>> {
 
-  public StateNode(StateNode<StateType, ActionType> parent, ActionType inducingAction, StateType state, Collection<? extends ActionType> validActions, boolean isTerminal) {
+  public StateNode(StateNode<StateType, ActionType> parent, ActionType inducingAction, StateType state, Set<ActionType> validActions, boolean isTerminal) {
     super(parent, inducingAction);
     this.state = state;
     Objects.requireNonNull(validActions, "validActions");
@@ -32,16 +33,13 @@ public final class StateNode<StateType, ActionType> extends Node<ActionType, Sta
 
   private final StateType state;
   private final boolean isTerminal;
+  private final Set<ActionType> validActions;
 
-  public final StateType state() { return this.state; }
-  public final boolean isTerminal() { return this.isTerminal; }
-
-  private final Collection<? extends ActionType> validActions;
+  public final StateType state() { return state; }
+  public final boolean isTerminal() { return isTerminal; }
 
   @Override
-  public final Collection<? extends ActionType> validActions() {
-    return this.validActions;
-  }
+  public final Set<ActionType> validActions() { return validActions; }
 
   private final Map<ActionType, StateNode<StateType, ActionType>> children;
 
@@ -54,6 +52,7 @@ public final class StateNode<StateType, ActionType> extends Node<ActionType, Sta
     if (children.containsKey(action)) {
       throw new IllegalArgumentException("A child with the same inducing action has already been added");
     }
+
     children.put(action, child);
   }
 
@@ -69,16 +68,16 @@ public final class StateNode<StateType, ActionType> extends Node<ActionType, Sta
     return child == null ? Collections.emptyList() : List.of(child);
   }
 
-  /**
-   * Returns all actions that have been taken at least once from this node.
-   */
-  public final Collection<ActionType> exploredActions() {
-    return children.keySet();
-  }
-
   @Override
   public String toString() {
     return "State: %s, Max Reward: %.5f".formatted(state(),maxReward());
+  }
+
+  /**
+   * Returns all actions that have been taken at least once from this node.
+   */
+  public final Set<ActionType> exploredActions() {
+    return children.keySet();
   }
 
 }

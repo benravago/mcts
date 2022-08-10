@@ -1,9 +1,8 @@
 package lib.mcts;
 
 import java.util.Objects;
-import static java.lang.Math.max;
-
-import static lib.mcts.SolverSupport.*;
+import static java.lang.Math.*;
+import static java.util.stream.Collectors.*;
 
 /**
  * A stateless solver for a Markov Decision Process (MDP).
@@ -18,7 +17,7 @@ import static lib.mcts.SolverSupport.*;
  * The constructor takes in a [MDP], a depth limit for simulations, a exploration constant, a reward discount factor
  * and a verbosity flag.
  */
-public class GenericSolver<StateType, ActionType> extends Solver<ActionType, ActionNode<StateType, ActionType>> {
+public class GenericSolver<StateType, ActionType> extends AbstractSolver<ActionType, ActionNode<StateType, ActionType>> {
 
   public GenericSolver(MDP<StateType, ActionType> mdp, int simulationDepthLimit, double explorationConstant, double rewardDiscountFactor, boolean verbose) {
     super(verbose, explorationConstant);
@@ -27,12 +26,16 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
     this.simulationDepthLimit = simulationDepthLimit;
     this.rewardDiscountFactor = rewardDiscountFactor;
     this.root = new ActionNode<>(null,null);
-    this.simulateActions(this.root);
+    simulateActions(this.root);
   }
 
   private final MDP<StateType, ActionType> mdp;
   private final int simulationDepthLimit;
   private final double rewardDiscountFactor;
+
+  public final MDP<StateType, ActionType> mdp() { return mdp; }
+  public final int simulationDepthLimit() { return simulationDepthLimit; }
+  public final double rewardDiscountFactor() { return rewardDiscountFactor; }
 
   private ActionNode<StateType, ActionType> root;
 
@@ -47,12 +50,14 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
     this.root = root;
   }
 
+  // SOLVER
+
   @Override
   public ActionNode<StateType, ActionType> select(ActionNode<StateType, ActionType> node) {
     Objects.requireNonNull(node, "node");
     // If this node is a leaf node, return it
     if (node.children().isEmpty()) {
-       return node;
+      return node;
     }
 
     var currentNode = node;
@@ -65,18 +70,15 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
       }
 
       var currentChildren = currentNode.children();
-      var exploredActions = exploredActions(currentNode);
-      for (var action:node.validActions()) {
-        if (exploredActions.contains(action)) continue;
+      var exploredActions = currentChildren.stream().map(c -> c.inducingAction()).collect(toSet());
+
+      if (currentNode.validActions().stream().anyMatch(a -> !exploredActions.contains(a))) {
         // There are unexplored actions
         return currentNode;
       }
 
       // All actions have been explored, choose best one
-      if (currentChildren.isEmpty()) {
-        throw new IllegalStateException("There were no children for explored node");
-      }
-      currentNode = currentChildren.stream().max((x,y) -> cmp(calculateUCT(x),calculateUCT(y))).get();
+      currentNode = currentChildren.stream().max((a,b) -> compareUCT(a,b)).orElseThrow(() -> new IllegalStateException("There were no children for explored node"));
       simulateActions(currentNode);
     }
   }
@@ -90,14 +92,10 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
     }
 
     // Expand an unexplored action
-    var exploredActions = exploredActions(node);
-    var unexploredActions = unexploredActions(node,exploredActions);
-
+    var exploredActions = node.children().stream().map(c -> c.inducingAction()).collect(toSet());
+    var unexploredActions = node.validActions().stream().filter(a -> !exploredActions.contains(a));
     // Action cannot be null
-    if (unexploredActions.isEmpty()) {
-      throw new IllegalStateException("No unexplored actions available");
-    }
-    var actionTaken = random(unexploredActions);
+    var actionTaken = unexploredActions.findAny().orElseThrow(() -> new IllegalStateException("No unexplored actions available"));
 
     // Transition to new state for given action
     var newNode = new ActionNode<>(node, actionTaken);
@@ -125,12 +123,12 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
 
     for (;;) {
       var validActions = mdp.actions(currentState);
-      var randomAction = random(validActions);
+      var randomAction = validActions.stream().findAny().get();
       var newState = mdp.transition(currentState, randomAction);
 
       if (verbose()) {
         trace("-> " + randomAction);
-        trace("-> " + newState);
+        trace(" => " + newState);
       }
 
       if (mdp.isTerminal(newState)) {
@@ -151,6 +149,7 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
         if (verbose()) {
           traceln("-> Depth limit reached: " + reward);
         }
+
         return reward;
       }
     }
@@ -166,9 +165,7 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
       currentStateNode.maxReward(max(currentStateNode.maxReward(), currentReward));
       currentStateNode.reward(currentStateNode.reward() + currentReward);
       currentStateNode.n(currentStateNode.n() + 1);
-      var parent = currentStateNode.parent();
-      if (parent == null) break;
-      currentStateNode = parent;
+      if ((currentStateNode = currentStateNode.parent()) == null) break;
       currentReward *= rewardDiscountFactor;
     }
   }
@@ -176,13 +173,12 @@ public class GenericSolver<StateType, ActionType> extends Solver<ActionType, Act
   // Utilities
 
   private final void simulateActions(ActionNode<StateType, ActionType> node) {
-    // private fun simulateActions(node: ActionNode<StateType, ActionType>) {
     var parent = node.parent();
 
     if (parent == null) {
-      var parentState = mdp.initialState();
-      node.state(parentState);
-      node.validActions(mdp.actions(parentState));
+      var initialState = mdp.initialState();
+      node.state(initialState);
+      node.validActions(mdp.actions(initialState));
       return;
     }
 

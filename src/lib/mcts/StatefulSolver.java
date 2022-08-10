@@ -1,9 +1,8 @@
 package lib.mcts;
 
 import java.util.Objects;
-import static java.lang.Math.max;
-
-import static lib.mcts.SolverSupport.*;
+import static java.lang.Math.*;
+import static java.util.stream.Collectors.*;
 
 /**
  * A stateful solver for a Markov Decision Process (MDP).
@@ -18,7 +17,7 @@ import static lib.mcts.SolverSupport.*;
  * The constructor takes in a [MDP], a depth limit for simulations, a exploration constant, a reward discount factor
  * and a verbosity flag.
  */
-public class StatefulSolver<StateType, ActionType> extends Solver<ActionType, StateNode<StateType, ActionType>> {
+public class StatefulSolver<StateType, ActionType> extends AbstractSolver<ActionType, StateNode<StateType, ActionType>> {
 
   public StatefulSolver(MDP<StateType, ActionType> mdp, int simulationDepthLimit, double explorationConstant, double rewardDiscountFactor, boolean verbose) {
     super(verbose, explorationConstant);
@@ -27,28 +26,30 @@ public class StatefulSolver<StateType, ActionType> extends Solver<ActionType, St
     this.simulationDepthLimit = simulationDepthLimit;
     this.rewardDiscountFactor = rewardDiscountFactor;
     this.root = createNode(null, null, this.mdp.initialState());
- }
-
-  private StateNode<StateType, ActionType> root;
-
-  @Override
-  public StateNode<StateType, ActionType> root() {
-    return this.root;
-  }
-
-  @Override
-  public void root(StateNode<StateType, ActionType> root) {
-    Objects.requireNonNull(root, "root");
-    this.root = root;
   }
 
   private final MDP<StateType, ActionType> mdp;
   private final int simulationDepthLimit;
   private final double rewardDiscountFactor;
 
-  protected final MDP<StateType, ActionType> mdp() { return this.mdp; }
-  protected final int simulationDepthLimit() { return this.simulationDepthLimit; }
-  protected final double rewardDiscountFactor() { return this.rewardDiscountFactor; }
+  public final MDP<StateType, ActionType> mdp() { return mdp; }
+  public final int simulationDepthLimit() { return simulationDepthLimit; }
+  public final double rewardDiscountFactor() { return rewardDiscountFactor; }
+
+  private StateNode<StateType, ActionType> root;
+
+  @Override
+  public final StateNode<StateType, ActionType> root() {
+    return root;
+  }
+
+  @Override
+  public final void root(StateNode<StateType, ActionType> root) {
+    Objects.requireNonNull(root, "root");
+    this.root = root;
+  }
+
+  // SOLVER
 
   @Override
   public StateNode<StateType, ActionType> select(StateNode<StateType, ActionType> node) {
@@ -69,11 +70,7 @@ public class StatefulSolver<StateType, ActionType> extends Solver<ActionType, St
       }
 
       // This state has been explored, select best action
-      var currentChildren = currentNode.children();
-      if (currentChildren.isEmpty()) {
-        throw new IllegalStateException("There were no children for explored node");
-      }
-      currentNode = currentChildren.stream().max((x,y) -> cmp(calculateUCT(x),calculateUCT(y))).get();
+      currentNode = currentNode.children().stream().max(this::compareUCT).orElseThrow(() -> new IllegalStateException("There were no children for explored node"));
     }
   }
 
@@ -86,11 +83,9 @@ public class StatefulSolver<StateType, ActionType> extends Solver<ActionType, St
     }
 
     // Expand an unexplored action
-    var unexploredActions = unexploredActions(node);
-    if (unexploredActions.isEmpty()) {
-      throw new IllegalStateException("No unexplored actions available");
-    }
-    var actionTaken = random(unexploredActions);
+    var exploredActions = node.children().stream().map(c -> c.inducingAction()).collect(toSet());
+    var unexploredActions = node.validActions().stream().filter(a -> !exploredActions.contains(a));
+    var actionTaken = unexploredActions.findAny().orElseThrow(() -> new IllegalStateException("No unexplored actions available"));
 
     // Transition to new state for given action
     var newState = mdp.transition(node.state(), actionTaken);
@@ -115,7 +110,7 @@ public class StatefulSolver<StateType, ActionType> extends Solver<ActionType, St
 
     for (;;) {
       var validActions = mdp.actions(currentState);
-      var randomAction = random(validActions);
+      var randomAction = validActions.stream().findAny().get();
       var newState = mdp.transition(currentState, randomAction);
 
       if (verbose()) {
@@ -157,9 +152,7 @@ public class StatefulSolver<StateType, ActionType> extends Solver<ActionType, St
       currentStateNode.maxReward(max(currentStateNode.maxReward(), currentReward));
       currentStateNode.reward(currentStateNode.reward() + currentReward);
       currentStateNode.n(currentStateNode.n() + 1);
-      var parent = currentStateNode.parent();
-      if (parent == null) break;
-      currentStateNode = parent;
+      if ((currentStateNode = currentStateNode.parent()) == null) break;
       currentReward *= rewardDiscountFactor;
     }
   }

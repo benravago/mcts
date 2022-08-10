@@ -1,6 +1,6 @@
 package lib.mcts;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * A representation of Markov Decision Processes.
@@ -39,6 +39,6 @@ public interface MDP<StateType, ActionType> {
   /**
    * Returns a collection of actions that are available for the given state.
    */
-  Collection<ActionType> actions(StateType state);
+  Set<ActionType> actions(StateType state);
 
 }
