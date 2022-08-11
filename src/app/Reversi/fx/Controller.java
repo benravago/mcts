@@ -1,4 +1,4 @@
-package app.reversi.fx;
+package app.Reversi.fx;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;

@@ -157,14 +157,14 @@ public abstract class AbstractSolver<ActionType, NodeType extends Node<ActionTyp
     if (node == null || node.depth() > depthLimit) {
       return;
     }
-    System.out.format("%s %s (n: %d, reward: %.5f, UCT: %.5f)",
+    System.out.format("%s %s (n: %d, reward: %.5f, UCT: %.5f) \n",
       indent, formatNode(node), node.n(), node.reward(), calculateUCT(node)
     );
     var any = node.children();
     if (!any.isEmpty()) {
       var n = any.size();
       for (var child:any) {
-        var b = n-- > 0 ? " "+boxvr : " "+boxur;
+        var b = --n > 0 ? " "+boxvr : " "+boxur;
         displayTree(depthLimit, child, generateIndent(indent) + b);
       }
     }

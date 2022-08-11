@@ -1,4 +1,4 @@
-package app.reversi.fx;
+package app.Reversi.fx;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,7 +12,7 @@ public final class App extends Application {
     var model = new Board();
     var view = new View();
     new Controller(model, view);
-    
+
     var scene = new Scene(view.pane);
     scene.getStylesheets().add(resource("style.css"));
     stage.setScene(scene);

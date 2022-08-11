@@ -1,4 +1,4 @@
-package app.reversi.fx;
+package app.Reversi.fx;
 
 import java.util.List;
 import java.util.ArrayList;

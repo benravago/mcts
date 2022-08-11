@@ -1,4 +1,4 @@
-package app.reversi.fx;
+package app.Reversi.fx;
 
 import java.io.File;
 import java.io.IOException;

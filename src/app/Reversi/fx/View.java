@@ -1,4 +1,4 @@
-package app.reversi.fx;
+package app.Reversi.fx;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
