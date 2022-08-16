@@ -2,7 +2,6 @@ package lib.mcts;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Set;
 import java.util.Collection;
 import static java.util.stream.Collectors.*;
@@ -55,7 +54,7 @@ public final class ActionNode<StateType, ActionType> extends AbstractNode<Action
   }
 
   public final void validActions(Set<ActionType> validActions) {
-    Objects.requireNonNull(validActions, "validActions");
+    assert validActions != null : "validActions";
     this.validActions = validActions;
   }
 

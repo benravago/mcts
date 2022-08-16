@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 
 /**
  * A representation of nodes used by the stateful [StatefulSolver] to solve a Markov Decision Process (MDP).
@@ -25,7 +24,7 @@ public final class StateNode<StateType, ActionType> extends AbstractNode<ActionT
   public StateNode(StateNode<StateType, ActionType> parent, ActionType inducingAction, StateType state, Set<ActionType> validActions, boolean isTerminal) {
     super(parent, inducingAction);
     this.state = state;
-    Objects.requireNonNull(validActions, "validActions");
+    assert validActions != null : "validActions";
     this.validActions = validActions;
     this.isTerminal = isTerminal;
     this.children = new LinkedHashMap<>();

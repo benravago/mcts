@@ -18,7 +18,7 @@ public class Main {
     System.out.println(optimalHorizon.toString() + ' ' + optimalHorizon.size());
 
     // Write data
-    var path = Paths.get("./pyl_output.txt");
+    var path = Paths.get("tmp/out_pyl.txt");
     var explorationTermHistory = solver.explorationTermHistory();
     Files.writeString(path, explorationTermHistory.toString() + ' ' + explorationTermHistory.size() );
 

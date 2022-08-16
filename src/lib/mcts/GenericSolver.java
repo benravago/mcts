@@ -1,6 +1,5 @@
 package lib.mcts;
 
-import java.util.Objects;
 import static java.lang.Math.*;
 import static java.util.stream.Collectors.*;
 
@@ -21,7 +20,7 @@ public class GenericSolver<StateType, ActionType> extends AbstractSolver<ActionT
 
   public GenericSolver(MDP<StateType, ActionType> mdp, int simulationDepthLimit, double explorationConstant, double rewardDiscountFactor, boolean verbose) {
     super(verbose, explorationConstant);
-    Objects.requireNonNull(mdp, "mdp");
+    assert mdp != null : "mdp";
     this.mdp = mdp;
     this.simulationDepthLimit = simulationDepthLimit;
     this.rewardDiscountFactor = rewardDiscountFactor;
@@ -46,7 +45,7 @@ public class GenericSolver<StateType, ActionType> extends AbstractSolver<ActionT
 
   @Override
   public final void root(ActionNode<StateType, ActionType> root) {
-    Objects.requireNonNull(root, "root");
+    assert root != null : "root";
     this.root = root;
   }
 
@@ -54,7 +53,7 @@ public class GenericSolver<StateType, ActionType> extends AbstractSolver<ActionT
 
   @Override
   public ActionNode<StateType, ActionType> select(ActionNode<StateType, ActionType> node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     // If this node is a leaf node, return it
     if (node.children().isEmpty()) {
       return node;
@@ -85,7 +84,7 @@ public class GenericSolver<StateType, ActionType> extends AbstractSolver<ActionT
 
   @Override
   public ActionNode<StateType, ActionType> expand(ActionNode<StateType, ActionType> node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     // If the node is terminal, return it, except root node
     if (mdp.isTerminal(node.state())) {
       return node;
@@ -107,7 +106,7 @@ public class GenericSolver<StateType, ActionType> extends AbstractSolver<ActionT
 
   @Override
   public double simulate(ActionNode<StateType, ActionType> node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     traceln("Simulation:");
 
     // If state is terminal, the reward is defined by MDP
@@ -157,7 +156,7 @@ public class GenericSolver<StateType, ActionType> extends AbstractSolver<ActionT
 
   @Override
   public void backPropagate(ActionNode<StateType, ActionType> node, double reward) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     var currentStateNode = node;
     var currentReward = reward;
 

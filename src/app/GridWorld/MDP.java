@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 
 class MDP implements lib.mcts.MDP<State, Action> {
 
@@ -19,10 +18,10 @@ class MDP implements lib.mcts.MDP<State, Action> {
   MDP(int xSize, int ySize, List<Reward> rewards, double transitionProbability, State startingLocation) {
     this.xSize = xSize;
     this.ySize = ySize;
-    Objects.requireNonNull(rewards, "rewards");
+    assert rewards != null : "rewards";
     this.rewards = rewards;
     this.transitionProbability = transitionProbability;
-    Objects.requireNonNull(startingLocation, "startingLocation");
+    assert startingLocation != null : "startingLocation";
     this.startingLocation = startingLocation;
     this.rewardStates = new LinkedHashMap<>();
   }

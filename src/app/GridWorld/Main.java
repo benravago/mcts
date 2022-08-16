@@ -34,7 +34,7 @@ public class Main {
     gwSolver.displayTree(3);
 
     // Write data
-    var path = Paths.get("./gw_output.txt");
+    var path = Paths.get("tmp/out_gw.txt");
     var explorationTermHistory = gwSolver.explorationTermHistory();
     Files.writeString(path, explorationTermHistory.toString() + ' ' + explorationTermHistory.size());
   }

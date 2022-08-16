@@ -1,6 +1,5 @@
 package lib.mcts;
 
-import java.util.Objects;
 import static java.lang.Math.*;
 import static java.util.stream.Collectors.*;
 
@@ -21,7 +20,7 @@ public class StatefulSolver<StateType, ActionType> extends AbstractSolver<Action
 
   public StatefulSolver(MDP<StateType, ActionType> mdp, int simulationDepthLimit, double explorationConstant, double rewardDiscountFactor, boolean verbose) {
     super(verbose, explorationConstant);
-    Objects.requireNonNull(mdp, "mdp");
+    assert mdp != null : "mdp";
     this.mdp = mdp;
     this.simulationDepthLimit = simulationDepthLimit;
     this.rewardDiscountFactor = rewardDiscountFactor;
@@ -45,7 +44,7 @@ public class StatefulSolver<StateType, ActionType> extends AbstractSolver<Action
 
   @Override
   public final void root(StateNode<StateType, ActionType> root) {
-    Objects.requireNonNull(root, "root");
+    assert root != null : "root";
     this.root = root;
   }
 
@@ -53,7 +52,7 @@ public class StatefulSolver<StateType, ActionType> extends AbstractSolver<Action
 
   @Override
   public StateNode<StateType, ActionType> select(StateNode<StateType, ActionType> node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     var currentNode = node;
     for (;;) {
       // If the node is terminal, return it
@@ -76,7 +75,7 @@ public class StatefulSolver<StateType, ActionType> extends AbstractSolver<Action
 
   @Override
   public StateNode<StateType, ActionType> expand(StateNode<StateType, ActionType> node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     // If the node is terminal, return it
     if (node.isTerminal()) {
       return node;
@@ -94,7 +93,7 @@ public class StatefulSolver<StateType, ActionType> extends AbstractSolver<Action
 
   @Override
   public double simulate(StateNode<StateType, ActionType> node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     traceln("Simulation:");
 
     // If state is terminal, the reward is defined by MDP
@@ -144,7 +143,7 @@ public class StatefulSolver<StateType, ActionType> extends AbstractSolver<Action
 
   @Override
   public void backPropagate(StateNode<StateType, ActionType> node, double reward) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     var currentStateNode = node;
     var currentReward = reward;
 

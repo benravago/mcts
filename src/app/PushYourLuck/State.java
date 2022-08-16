@@ -1,11 +1,9 @@
 package app.PushYourLuck;
 
-import java.util.Objects;
-
 class State {
 
   State(boolean[][] state) {
-    Objects.requireNonNull(state, "state");
+    assert state != null : "state";
     this.state = state;
   }
 

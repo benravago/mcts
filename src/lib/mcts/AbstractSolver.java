@@ -1,6 +1,5 @@
 package lib.mcts;
 
-import java.util.Objects;
 import static java.lang.Math.*;
 
 public abstract class AbstractSolver<ActionType, NodeType extends Node<ActionType, NodeType>> implements Solver<ActionType,NodeType> {
@@ -69,7 +68,7 @@ public abstract class AbstractSolver<ActionType, NodeType extends Node<ActionTyp
    * Calculates the UCT score of a given node in the tree.
    */
   protected final double calculateUCT(NodeType node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     var parent = node.parent();
     var parentN = parent != null ? parent.n() : node.n();
     return calculateUCT(parentN, node.n(), node.reward(), explorationConstant);
@@ -126,7 +125,7 @@ public abstract class AbstractSolver<ActionType, NodeType extends Node<ActionTyp
    * Formats a given node into a string.
    */
   protected String formatNode(NodeType node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     return node.toString();
   }
 
@@ -134,7 +133,7 @@ public abstract class AbstractSolver<ActionType, NodeType extends Node<ActionTyp
    * Prints the tree starting from the given node.
    */
   public void displayNode(NodeType node) {
-    Objects.requireNonNull(node, "node");
+    assert node != null : "node";
     var parent = node.parent();
     if (parent!= null) {
       displayNode(parent);

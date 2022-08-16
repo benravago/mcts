@@ -40,7 +40,7 @@ class Solve {
 
   Map<Long, Action> solutions() { return mapOfSolutions; }
 
-  long pair(int x, int y) { return ((long)x << 32) | (long)y; } // Pair( first:x, second:y )
+  static long pair(int x, int y) { return ((long)x << 32) | (long)y; } // Pair( first:x, second:y )
 
   void getWorldSolve() {
 

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-class AppTests {
+class GameTests {
 
   static char[] c(char...c) { return c; }
   static char[][] b(char[]...b) { return b; }
