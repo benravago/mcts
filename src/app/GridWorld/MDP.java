@@ -46,12 +46,12 @@ class MDP implements lib.mcts.MDP<State, Action> {
   @Override
   public double reward(State previousState, Action action, State state) {
     var r = any(rewards,state);
-    return r != null ? r.value() : 0.0;
+    return r != null ? r.value : 0.0;
   }
 
   @Override
   public State transition(State state, Action action) {
-    if (state.isTerminal()) {
+    if (state.isTerminal) {
       return state;
     } else if (any(rewards,state) != null) {
       return rewardStates.getOrDefault(state, new State(state.x, state.y, true));

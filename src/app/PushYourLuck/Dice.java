@@ -7,10 +7,10 @@ class Dice {
   private final int nDice;
   private final int nSides;
 
-  private boolean[][] markedSides;
-  private double instantReward;
-
   private final int[][] diceConfig;
+
+  boolean[][] markedSides;
+  double instantReward;
 
   Dice(int nDice, int nSides, double instantReward) {
     this.nDice = nDice;
@@ -19,9 +19,6 @@ class Dice {
     this.markedSides = marks(this.nDice, this.nSides);
     this.diceConfig = pips(this.nDice, this.nSides);
   }
-
-  boolean[][] markedSides() { return markedSides; }
-  double instantReward() { return instantReward; }
 
   static final Random random = new Random();
 
@@ -106,4 +103,3 @@ class Dice {
   }
 
 }
-

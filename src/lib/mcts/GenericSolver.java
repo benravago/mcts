@@ -28,9 +28,9 @@ public class GenericSolver<StateType, ActionType> extends AbstractSolver<ActionT
     simulateActions(this.root);
   }
 
-  private final MDP<StateType, ActionType> mdp;
-  private final int simulationDepthLimit;
-  private final double rewardDiscountFactor;
+  protected final MDP<StateType, ActionType> mdp;
+  protected final int simulationDepthLimit;
+  protected final double rewardDiscountFactor;
 
   public final MDP<StateType, ActionType> mdp() { return mdp; }
   public final int simulationDepthLimit() { return simulationDepthLimit; }

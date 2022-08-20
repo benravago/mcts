@@ -21,16 +21,10 @@ class State {
     return max;
   }
 
-//  val gameGrid = gamePosition.grid
-//  val score = gameGrid.mapNotNull{ it.max() }.max()
-
   State makeMove(Action action, int[][] gameGrid) { // : Array<Array<Int>> = this.gameGrid): Game2048State {
     var newPosition = new Position(spawnNumber(manipulateGrid(gameGrid, action)));
     return new State(newPosition);
   }
-
-//  val newPosition = Game2048Position(gameObject.spawnNumber(gameObject.manipulateGrid(gameGrid, action.toString())))
-//  return Game2048State(newPosition)
 
   @Override
   public String toString() {

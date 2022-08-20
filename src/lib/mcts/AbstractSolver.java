@@ -75,8 +75,8 @@ public abstract class AbstractSolver<ActionType, NodeType extends Node<ActionTyp
   }
 
   /**
-   * Calculates the UCT score given specific input parameters for the parent, the number of visits, the reward
-   * and the exploration constant.
+   * Calculates the UCT score given specific input parameters for the parent,
+   * the number of visits, the reward and the exploration constant.
    */
   protected double calculateUCT(double parentN, double n, double reward, double explorationConstant) {
     return reward/n + explorationConstant * sqrt(log(parentN) / n );
@@ -89,8 +89,8 @@ public abstract class AbstractSolver<ActionType, NodeType extends Node<ActionTyp
   }
 
   /**
-   * Returns the best action from the root by choosing the node with the highest amount of visits. This function
-   * can be overridden to modify the behavior to improve performance for a specific problem domain.
+   * Returns the best action from the root by choosing the node with the highest amount of visits.
+   * This function can be overridden to modify the behavior to improve performance for a specific problem domain.
    */
   public ActionType extractOptimalAction() {
     var mostVisited = root().children().stream().max(this::compareN).orElse(null);

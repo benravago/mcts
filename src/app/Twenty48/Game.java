@@ -58,10 +58,10 @@ class Game {
   }
 
   static String waitForInput(String prompt) {
-    System.out.print(prompt);
     var in = new BufferedReader(new InputStreamReader(System.in));
     for (;;) {
       try {
+        System.out.print(prompt);
         var line = in.readLine();
         if (line != null && !line.isBlank()) {
           return line.strip();

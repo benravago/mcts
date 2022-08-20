@@ -2,14 +2,12 @@ package app.GridWorld;
 
 class State extends Position {
 
-  private final boolean isTerminal;
+  final boolean isTerminal;
 
   State(int x, int y, boolean isTerminal) {
     super(x,y);
     this.isTerminal = isTerminal;
   }
-
-  boolean isTerminal() { return isTerminal; }
 
   boolean isNeighbourValid(Action action, int xSize, int ySize) {
     return switch (action) {

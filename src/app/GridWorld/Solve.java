@@ -46,7 +46,7 @@ class Solve {
 
     var rewardLocations = new HashSet<Long>();
     for (var r:rewards) {
-      rewardLocations.add(pair(r.x(), r.y()));
+      rewardLocations.add(pair(r.x, r.y));
     }
 
     for (var x = 0; x < xSize; x++) {
@@ -74,7 +74,7 @@ class Solve {
       for (var x = 0; x < xSize; x++) {
         var reward = singleOrNull(rewards, x, y);
         if (reward != null) {
-          out.append(reward.value() > 0 ? '1' : '0');
+          out.append(reward.value > 0 ? '1' : '0');
         } else {
           out.append(tag(mapOfSolutions.get(pair(x,y))));
         }
@@ -91,7 +91,7 @@ class Solve {
   static Reward singleOrNull(List<Reward> list, int x, int y) {
     Reward single = null;
     for (var r:list) {
-      if (r.x() == x && r.y() == y) {
+      if (r.x == x && r.y == y) {
         if (single != null) return null;
         single = r;
       }

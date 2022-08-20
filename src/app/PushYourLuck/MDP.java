@@ -16,7 +16,7 @@ class MDP implements lib.mcts.MDP<State,Action> {
 
   @Override
   public State initialState() {
-    return new State(diceObject.markedSides());
+    return new State(diceObject.markedSides);
   }
 
   @Override
@@ -28,7 +28,7 @@ class MDP implements lib.mcts.MDP<State,Action> {
       }
       case CASHOUT -> {
         diceObject.cashOut();
-        yield new State(diceObject.markedSides());
+        yield new State(diceObject.markedSides);
       }
     };
   }
@@ -36,7 +36,7 @@ class MDP implements lib.mcts.MDP<State,Action> {
   @Override
   public double reward(State previousState, Action action, State state) {
     assert state != null;
-    return diceObject.instantReward();
+    return diceObject.instantReward;
   }
 
   @Override
